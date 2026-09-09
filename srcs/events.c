@@ -6,7 +6,7 @@
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 10:47:50 by lgranger          #+#    #+#             */
-/*   Updated: 2026/09/09 09:42:05 by lgranger         ###   ########.fr       */
+/*   Updated: 2026/09/09 10:02:34 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,8 @@ int	close_win(t_data *data)
 
 void	clear_image(t_data *data)
 {
-	int	i;
-
-	i = 0;
-	while (i < data->size_line * HEIGHT)
-	{
-		data->img_data[i] = 0;
-		i++;
-	}
-	i = 0;
-	while (i < WIDTH * HEIGHT)
-	{
-		data->buf_depth[i] = INFINITY;
-		i++;
-	}
+	ft_bzero(data->img_data, data->size_line * HEIGHT);
+	ft_memset(data->buf_depth, 0x7F, WIDTH * HEIGHT * sizeof(float));
 }
 
 void	reset_points(t_data *data)
@@ -73,7 +61,6 @@ void	reset_points(t_data *data)
 
 void	re_draw(t_data *data)
 {
-	clear_image(data);
 	set_new_points(data);
 	put_pix_img(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);

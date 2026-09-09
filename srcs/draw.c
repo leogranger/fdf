@@ -6,7 +6,7 @@
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 17:24:42 by lgranger          #+#    #+#             */
-/*   Updated: 2026/09/09 09:41:55 by lgranger         ###   ########.fr       */
+/*   Updated: 2026/09/09 10:03:22 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,11 @@ void	dda_line(t_data *data, t_point *p1, t_point *p2)
 	float	dx;
 	float	dy;
 	float	steps;
-
+	if ((p1->screen_x < 0 && p2->screen_x < 0)
+		|| (p1->screen_x >= WIDTH && p2->screen_x >= WIDTH)
+		|| (p1->screen_y < 0 && p2->screen_y < 0)
+		|| (p1->screen_y >= HEIGHT && p2->screen_y >= HEIGHT))
+		return ;
 	data->depth = p1->depth;
 	color_right_shift(p1, p2);
 	dx = p2->screen_x - p1->screen_x;

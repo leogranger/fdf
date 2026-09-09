@@ -6,7 +6,7 @@
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 13:39:30 by lgranger          #+#    #+#             */
-/*   Updated: 2026/09/09 09:42:47 by lgranger         ###   ########.fr       */
+/*   Updated: 2026/09/09 10:04:01 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ void	rotate_axis(t_data *data, int keycode)
 	if (keycode == ARR_R || keycode == ARR_D)
 		steps -= 0.05;
 	rotate_points(data, keycode, steps);
-	clear_image(data);
 	put_pix_img(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
 }
