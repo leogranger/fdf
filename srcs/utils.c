@@ -6,7 +6,7 @@
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 09:36:23 by lgranger          #+#    #+#             */
-/*   Updated: 2026/09/09 09:42:55 by lgranger         ###   ########.fr       */
+/*   Updated: 2026/09/09 10:13:24 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	isometric_mode(t_data *data, t_point *point)
 	double	iso_y;
 
 	point->visible = 1;
-	iso_x = (point->x - point->y) * cos(0.523599);
-	iso_y = (point->x + point->y) * sin(0.523599) - (point->z
+	iso_x = (point->x - point->y) * 0.8660254;
+	iso_y = (point->x + point->y) * 0.5 - (point->z
 			* data->map->z_scale);
 	point->depth = -1000.0 * (point->x + point->y + point->z);
 	point->screen_x = (iso_x * data->zoom) + data->offset_x;
@@ -33,8 +33,8 @@ void	perspective_mode(t_data *data, t_point *point)
 	double	ry;
 	double	rz;
 
-	ry = point->y * cos(0.523599) - point->z * sin(0.523599);
-	rz = point->y * sin(0.523599) + point->z * cos(0.523599);
+	ry = point->y * 0.8660254 - point->z * 0.5;
+	rz = point->y * 0.5 + point->z * 0.8660254;
 	if (data->distance - rz > 1)
 	{
 		point->depth = data->distance - rz;
