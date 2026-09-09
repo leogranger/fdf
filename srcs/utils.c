@@ -5,43 +5,47 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/18 09:19:24 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 14:49:15 by lgranger         ###   ########.fr       */
+/*   Created: 2025/12/12 09:36:23 by lgranger          #+#    #+#             */
+/*   Updated: 2026/09/09 09:42:55 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/fdf.h"
+#include <limits.h>
+#include <math.h>
 
-void	draw_horizontal(t_data *data, int h, int l)
+void	isometric_mode(t_data *data, t_point *point)
 {
-	int	x;
+	double	iso_x;
+	double	iso_y;
 
-	while (h >= 0)
-	{
-		x = l;
-		while (x - 1 >= 0)
-		{
-			dda_line(data, data->map->land[h][x], data->map->land[h][x - 1]);
-			x--;
-		}
-		h--;
-	}
+	point->visible = 1;
+	iso_x = (point->x - point->y) * cos(0.523599);
+	iso_y = (point->x + point->y) * sin(0.523599) - (point->z
+			* data->map->z_scale);
+	point->depth = -1000.0 * (point->x + point->y + point->z);
+	point->screen_x = (iso_x * data->zoom) + data->offset_x;
+	point->screen_y = (iso_y * data->zoom) + data->offset_y;
 }
 
-void	draw_vertical(t_data *data, int h, int l)
+void	perspective_mode(t_data *data, t_point *point)
 {
-	int	y;
+	double	ry;
+	double	rz;
 
-	while (l >= 0)
+	ry = point->y * cos(0.523599) - point->z * sin(0.523599);
+	rz = point->y * sin(0.523599) + point->z * cos(0.523599);
+	if (data->distance - rz > 1)
 	{
-		y = h;
-		while (y - 1 >= 0)
-		{
-			dda_line(data, data->map->land[y][l], data->map->land[y - 1][l]);
-			y--;
-		}
-		l--;
+		point->depth = data->distance - rz;
+		point->visible = 1;
+		point->screen_x = (point->x * data->distance) / (data->distance - rz)
+			* data->zoom + data->offset_x;
+		point->screen_y = (ry * data->distance) / (data->distance - rz)
+			* data->zoom + data->offset_y;
 	}
+	else
+		point->visible = 0;
 }
 
 int	find_str(char *s1, char *s2)
@@ -57,50 +61,40 @@ int	find_str(char *s1, char *s2)
 	return (0);
 }
 
-void	find_min_max_z(t_data *data)
+void	draw_horizontal(t_data *data, int h, int l)
 {
 	int	x;
-	int	y;
 
-	y = 0;
-	data->map->min_z = data->map->land[0][0]->z;
-	data->map->max_z = data->map->land[0][0]->z;
-	while (y < data->map->height)
+	while (h >= 0)
 	{
-		x = 0;
-		while (x < data->map->len)
+		x = l;
+		while (x - 1 >= 0)
 		{
-			if (data->map->land[y][x]->z < data->map->min_z)
-				data->map->min_z = data->map->land[y][x]->z;
-			if (data->map->land[y][x]->z > data->map->max_z)
-				data->map->max_z = data->map->land[y][x]->z;
-			x++;
+			if (data->map->land[h][x]->visible && data->map->land[h][x
+				- 1]->visible)
+				dda_line(data, data->map->land[h][x], data->map->land[h][x
+					- 1]);
+			x--;
 		}
-		y++;
+		h--;
 	}
 }
 
-void	scale_map(t_data *data)
+void	draw_vertical(t_data *data, int h, int l)
 {
-	int		x;
-	int		y;
-	double	range;
+	int	y;
 
-	y = 0;
-	find_min_max_z(data);
-	range = data->map->max_z - data->map->min_z;
-	if (range == 0.0)
-		data->map->z_scale = 1;
-	else
-		data->map->z_scale = 10.0 / range;
-	while (y < data->map->height)
+	while (l >= 0)
 	{
-		x = 0;
-		while (x < data->map->len)
+		y = h;
+		while (y - 1 >= 0)
 		{
-			screen_coord(data, data->map->land[y][x]);
-			x++;
+			if (data->map->land[y][l]->visible && data->map->land[y
+				- 1][l]->visible)
+				dda_line(data, data->map->land[y][l], data->map->land[y
+					- 1][l]);
+			y--;
 		}
-		y++;
+		l--;
 	}
 }

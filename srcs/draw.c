@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/18 09:20:18 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 11:27:56 by lgranger         ###   ########.fr       */
+/*   Created: 2025/12/10 17:24:42 by lgranger          #+#    #+#             */
+/*   Updated: 2026/09/09 09:41:55 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,15 @@ void	put_line(t_data *data, int steps, t_point *p1)
 	new_y = p1->screen_y;
 	while (i <= steps)
 	{
-		put_pixel(data, new_x, new_y, p1->color);
+		if (data->r_inc == 0 && data->g_inc == 0 && data->b_inc == 0)
+			put_pixel(data, new_x, new_y, p1->color);
+		else
+		{
+			put_pixel(data, new_x, new_y, color_left_shift(&tmpp));
+			tmpp.r += data->r_inc;
+			tmpp.g += data->g_inc;
+			tmpp.b += data->b_inc;
+		}
 		new_x += data->x_inc;
 		new_y += data->y_inc;
 		data->depth += data->depth_inc;
@@ -64,6 +72,7 @@ void	dda_line(t_data *data, t_point *p1, t_point *p2)
 	float	steps;
 
 	data->depth = p1->depth;
+	color_right_shift(p1, p2);
 	dx = p2->screen_x - p1->screen_x;
 	dy = p2->screen_y - p1->screen_y;
 	if (fabs_value(dx) > fabs_value(dy))
@@ -73,6 +82,7 @@ void	dda_line(t_data *data, t_point *p1, t_point *p2)
 	if (steps == 0)
 		steps = 1;
 	data->depth_inc = (p2->depth - p1->depth) / steps;
+	set_color_inc(data, p1, p2, steps);
 	data->x_inc = dx / steps;
 	data->y_inc = dy / steps;
 	put_line(data, steps, p1);

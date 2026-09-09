@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hooks_bonus.c                                      :+:      :+:    :+:   */
+/*   hooks.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 10:03:47 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 09:21:08 by lgranger         ###   ########.fr       */
+/*   Updated: 2026/09/09 09:42:13 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/fdf_bonus.h"
+#include "../include/fdf.h"
 
 int	key_hook(int keycode, t_data *data)
 {

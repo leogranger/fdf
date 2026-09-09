@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/18 09:19:43 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 13:31:55 by lgranger         ###   ########.fr       */
+/*   Created: 2025/12/15 13:47:52 by lgranger          #+#    #+#             */
+/*   Updated: 2026/09/09 09:42:27 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ bool	check_line(char *lines)
 	}
 	else
 	{
-		if (!check_rgb_hex(tmp, len) || check_rgb_hex(tmp, len))
+		if (!check_rgb_hex(tmp, len))
 			return (false);
 	}
 	return (true);
@@ -97,7 +97,7 @@ void	check_map(t_data *data)
 		if (!check_line(data->map->landscape[i]))
 		{
 			free_tab(data->map->landscape);
-			ft_error("The file contains unauthorized characters.", data);
+			ft_error("The file countains unauthorized characters.", data);
 		}
 		i++;
 	}

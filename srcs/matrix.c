@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   matrix_bonus.c                                     :+:      :+:    :+:   */
+/*   matrix.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 14:06:27 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 13:41:44 by lgranger         ###   ########.fr       */
+/*   Updated: 2026/09/09 09:42:24 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/fdf_bonus.h"
+#include "../include/fdf.h"
 #include <limits.h>
 #include <math.h>
 

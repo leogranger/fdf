@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/18 09:20:13 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 13:24:22 by lgranger         ###   ########.fr       */
+/*   Created: 2025/12/15 09:23:25 by lgranger          #+#    #+#             */
+/*   Updated: 2026/09/09 09:42:01 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void	free_3d_array(t_data *data)
 	int	y;
 
 	y = 0;
+	if (!data->map->land)
+		return ;
 	while (y < data->map->height)
 	{
 		x = 0;
@@ -60,5 +62,7 @@ void	ft_error(char *s, t_data *data)
 		free(data->map);
 	if (data && data->buf_depth)
 		free(data->buf_depth);
+	if (data && data->r)
+		free(data->r);
 	exit(0);
 }

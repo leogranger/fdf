@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   translation_scaling_bonus.c                        :+:      :+:    :+:   */
+/*   translation_scaling.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 14:31:43 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/22 09:56:55 by lgranger         ###   ########.fr       */
+/*   Updated: 2026/09/09 09:42:51 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/fdf_bonus.h"
+#include "../include/fdf.h"
 
 void	print_controls(void)
 {

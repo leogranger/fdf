@@ -5,12 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/18 09:19:49 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 14:49:05 by lgranger         ###   ########.fr       */
+/*   Created: 2025/12/10 17:25:22 by lgranger          #+#    #+#             */
+/*   Updated: 2026/09/09 09:42:20 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/fdf.h"
+#include <stdio.h>
 
 void	allocate_rows(t_data *data, int height, int len)
 {
@@ -58,7 +59,7 @@ void	check_content(t_data *data, char *almost_map, char *whole_map)
 	if (find_str(whole_map, "\n\n"))
 	{
 		free(whole_map);
-		ft_error("There is an empty line in the file", data);
+		ft_error("There is an empty line in the file.", data);
 	}
 	data->map->landscape = ft_split(whole_map, '\n');
 	free(whole_map);

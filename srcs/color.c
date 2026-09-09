@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color_bonus.c                                      :+:      :+:    :+:   */
+/*   color.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 09:06:53 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 09:20:36 by lgranger         ###   ########.fr       */
+/*   Updated: 2026/09/09 09:41:51 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/fdf_bonus.h"
+#include "../include/fdf.h"
 
 void	set_color_inc(t_data *data, t_point *p1, t_point *p2, int steps)
 {

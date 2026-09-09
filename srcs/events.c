@@ -5,20 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/18 09:20:07 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 13:30:33 by lgranger         ###   ########.fr       */
+/*   Created: 2025/12/04 10:47:50 by lgranger          #+#    #+#             */
+/*   Updated: 2026/09/09 09:42:05 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/fdf.h"
-#include <math.h>
-
-int	key_hook(int keycode, t_data *data)
-{
-	if (keycode == K_ESC)
-		close_win(data);
-	return (0);
-}
+#include "math.h"
 
 int	close_win(t_data *data)
 {
@@ -48,4 +41,40 @@ void	clear_image(t_data *data)
 		data->buf_depth[i] = INFINITY;
 		i++;
 	}
+}
+
+void	reset_points(t_data *data)
+{
+	int	x;
+	int	y;
+
+	y = 0;
+	data->offset_x = WIDTH / 2;
+	data->offset_y = HEIGHT / 2;
+	data->projection_mode = 1;
+	data->zoom = 1.0;
+	data->distance = 150;
+	free(data->r);
+	data->r = create_matrix(data);
+	while (y < data->map->height)
+	{
+		x = 0;
+		while (x < data->map->len)
+		{
+			data->map->land[y][x]->x = data->map->land[y][x]->orig_x;
+			data->map->land[y][x]->y = data->map->land[y][x]->orig_y;
+			data->map->land[y][x]->z = data->map->land[y][x]->orig_z;
+			x++;
+		}
+		y++;
+	}
+	re_draw(data);
+}
+
+void	re_draw(t_data *data)
+{
+	clear_image(data);
+	set_new_points(data);
+	put_pix_img(data);
+	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
 }

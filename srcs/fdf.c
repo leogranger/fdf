@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgranger <lgranger@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/18 09:20:02 by lgranger          #+#    #+#             */
-/*   Updated: 2025/12/18 15:05:09 by lgranger         ###   ########.fr       */
+/*   Created: 2025/12/03 11:29:38 by lgranger          #+#    #+#             */
+/*   Updated: 2026/09/09 09:42:08 by lgranger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,12 @@ void	set_window(t_data *data)
 
 void	set_data(t_data *data)
 {
+	data->r = create_matrix(data);
 	data->offset_x = WIDTH / 2;
 	data->offset_y = HEIGHT / 2;
-	data->zoom = 10.0;
+	data->projection_mode = 1;
+	data->zoom = 1.0;
+	data->distance = 150;
 }
 
 int	main(int argc, char **argv)
@@ -82,7 +85,7 @@ int	main(int argc, char **argv)
 	ft_bzero(&data, sizeof(data));
 	data.map = ft_calloc(1, sizeof(t_map));
 	if (!data.map)
-		ft_error("Couldn't allocate memory for the map.", &data);
+		ft_error("Memory allocation of the map has failed.", &data);
 	check_arg(argc, argv, &data);
 	set_data(&data);
 	set_map(&data);
@@ -90,7 +93,9 @@ int	main(int argc, char **argv)
 	set_window(&data);
 	put_pix_img(&data);
 	mlx_put_image_to_window(data.mlx, data.win, data.img, 0, 0);
+	print_controls();
 	mlx_hook(data.win, 2, 1L << 0, key_hook, &data);
+	mlx_hook(data.win, 4, 1L << 2, mouse_hook, &data);
 	mlx_hook(data.win, 17, 0, close_win, &data);
 	mlx_loop(data.mlx);
 }
