@@ -1,39 +1,54 @@
+*This project has been created as part of the 42 curriculum by lgranger.*
+
 # FdF
 
-42 graphics project: a wireframe renderer for 3D height maps.
+## Description
 
-The program reads a `.fdf` file, projects the grid in isometric or
-perspective view, and draws it with [MinilibX](https://github.com/42Paris/minilibx-linux).
+FdF (fil de fer) is a 42 graphics project. The goal is to read a height
+map from a `.fdf` file and display it as a 3D wireframe.
 
-## Requirements
+Each cell of the file is a point in a regular grid. The integer is the
+altitude (`z`). An optional hex color can be attached to a point. The
+program projects those points (isometric or perspective), connects
+neighbours with lines, and draws the result in a MinilibX window.
+
+This implementation also rotates the mesh with 3x3 matrices, interpolates
+colors along edges, and uses a depth buffer so closer pixels hide
+farther ones.
+
+## Instructions
+
+### Requirements
 
 - Linux
-- `cc`, `make`
-- X11 development libraries (`libx11-dev`, `libxext-dev`, `zlib1g-dev`)
+- `cc` and `make`
+- X11 libraries: `libx11-dev`, `libxext-dev`, `zlib1g-dev`
 
-This project uses the local `libft` and `minilibx-linux` copies in the
-repository. It is written to compile with `-Wall -Wextra -Werror`.
+`libft` and `minilibx-linux` are already in the repository.
 
-## Compilation
+### Compilation
 
 ```sh
 make
 ```
 
-| Rule     | Effect                                      |
-|----------|---------------------------------------------|
-| `make`   | Build `libft`, MinilibX, and `./fdf`        |
-| `make clean`  | Remove object files (`objs/`)          |
-| `make fclean` | `clean` + remove `./fdf`               |
-| `make re`     | `fclean` then `all`                    |
+| Rule          | Effect                               |
+|---------------|--------------------------------------|
+| `make`        | Build `libft`, MinilibX, and `./fdf` |
+| `make clean`  | Remove object files (`objs/`)        |
+| `make fclean` | `clean` and remove `./fdf`           |
+| `make re`     | `fclean` then rebuild                |
 
-## Usage
+The project compiles with `-Wall -Wextra -Werror`.
+
+### Execution
 
 ```sh
 ./fdf <map.fdf>
 ```
 
-Examples:
+Exactly one argument is required. The file must exist and end with
+`.fdf`.
 
 ```sh
 ./fdf landscape/42.fdf
@@ -41,31 +56,11 @@ Examples:
 ./fdf test_maps/elem-col.fdf
 ```
 
-The program takes exactly one argument. The file must exist and end
-with `.fdf`.
+### Controls
 
-## Map format
-
-Each line is a row of the grid. Values are integers separated by spaces.
-An optional color can follow a height with `,0x` and hexadecimal digits:
-
-```
-0  0  0  0
-0 10 20,0xFF0000 10
-0  0  0  0
-```
-
-The map must be rectangular: every row has the same number of points.
-Empty files, empty lines, and characters that are not part of a height
-or a hex color are rejected.
-
-Sample maps live in `landscape/` and `test_maps/`.
-
-## Controls
-
-| Key        | Action                    |
+| Input      | Action                    |
 |------------|---------------------------|
-| Arrow keys | Rotate                    |
+| Arrows     | Rotate                    |
 | W A S D    | Translate                 |
 | Scroll     | Zoom (towards the cursor) |
 | 1          | Isometric projection      |
@@ -73,72 +68,89 @@ Sample maps live in `landscape/` and `test_maps/`.
 | R          | Reset view                |
 | ESC        | Close                     |
 
-The window is 1920 x 1080.
+Window size: 1920 x 1080.
 
-## Features
+### Map format
 
-- Isometric and perspective projections
-- Rotation with 3x3 matrices, applied from each point's original
-  coordinates
-- Color parsing (`z,0xRRGGBB`) and interpolation along edges
-- Depth buffer so closer pixels hide farther ones
-- Automatic Z scaling from the map's min / max height
-
-## MinilibX and large maps
-
-MinilibX is a thin X11 wrapper. It has no GPU path: every pixel is
-written on the CPU, into an image buffer, then copied to the window
-with `mlx_put_image_to_window`.
-
-FdF redraws the whole scene on each input event (key, scroll). For
-every frame it:
-
-1. Clears a 1920 x 1080 image and depth buffer
-2. Projects every vertex
-3. Runs DDA on every grid edge
-4. Writes pixels one by one, with a depth test
-
-That cost grows with the number of edges, not with how the map looks
-on screen. A small map such as `landscape/42.fdf` (13 x 19) is a few
-hundred lines per frame and stays smooth.
-
-A map such as `landscape/dentsdumidi.fdf` is 480 x 350:
-
-- about 168,000 vertices
-- about 335,000 edges
-- each edge is a DDA loop and several `put_pixel` calls
-
-At default zoom, neighbouring points often land on the same pixel, so
-most of that work is redundant. MinilibX still has to do it. Holding
-an arrow key repeats the full redraw many times per second. This is a
-limit of software rasterisation through MinilibX, not a parsing bug.
-
-Practical expectation:
-
-- Small and medium maps: interactive
-- Very large maps (`dentsdumidi`, `valley`, `julia`, `elem-fract`):
-  usable, but rotation will not feel like a GPU renderer
-
-Zooming in on a huge map makes it heavier still, because each edge
-covers more pixels.
-
-There is no supported way in this stack (42 allowed functions,
-MinilibX, no OpenGL) to draw hundreds of thousands of lines at a
-stable high frame rate while keeping a full depth buffer. The
-renderer is built for wireframe maps of a size the CPU can walk every
-frame.
-
-## Project layout
+Each line is a row of the grid. Values are integers separated by spaces.
+A color may follow a height as `,0x` plus hexadecimal digits:
 
 ```
-include/     headers
-srcs/        renderer, parser, events
-libft/       libc-style helpers, printf, get_next_line
-minilibx-linux/
-landscape/   maps
-test_maps/   maps
+0  0  0  0
+0 10 20,0xFF0000 10
+0  0  0  0
 ```
 
-## Author
+The map must be rectangular. Empty files, empty lines, and unauthorized
+characters are rejected. Sample maps are in `landscape/` and
+`test_maps/`.
 
-lgranger @ 42 Lausanne
+### MinilibX limits on huge maps
+
+MinilibX is a thin X11 wrapper with no GPU path. Every pixel is written
+on the CPU into an image buffer, then copied to the window with
+`mlx_put_image_to_window`.
+
+FdF redraws the whole scene on each input event. A frame clears a
+1920 x 1080 image and depth buffer, projects every vertex, runs DDA on
+every grid edge, and writes pixels one by one.
+
+That cost follows the number of edges, not how small the drawing looks.
+`landscape/42.fdf` (13 x 19) is a few hundred lines per frame and stays
+smooth. `landscape/dentsdumidi.fdf` (480 x 350) is about 168,000
+vertices and 335,000 edges. At default zoom many neighbours already
+share a pixel, but MinilibX still walks every edge. Holding an arrow
+key repeats that work on every key repeat.
+
+This is a limit of software rasterisation through MinilibX, not a
+parsing bug. Small and medium maps are interactive. Very large maps
+(`dentsdumidi`, `valley`, `julia`, `elem-fract`) remain usable, but
+rotation will not feel like a GPU renderer. Zooming in makes huge maps
+heavier, because each edge covers more pixels.
+
+With the functions allowed at 42 (MinilibX, no OpenGL), there is no
+way to draw hundreds of thousands of depth-tested lines at a stable
+high frame rate. The renderer is meant for wireframe maps the CPU can
+walk every frame.
+
+## Resources
+
+### Topic references
+
+- [MinilibX (Linux)](https://github.com/42Paris/minilibx-linux) —
+  window, image buffer, hooks, and pixel drawing used by this project
+- [Digital differential analyzer (graphics)](https://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm)) —
+  line rasterisation (`dda_line`)
+- [Isometric projection](https://en.wikipedia.org/wiki/Isometric_projection) —
+  default 30-degree view
+- [3D projection](https://en.wikipedia.org/wiki/3D_projection) —
+  perspective mode
+- [Rotation matrix](https://en.wikipedia.org/wiki/Rotation_matrix) —
+  X / Z rotations composed into one 3x3 matrix
+- [Z-buffering](https://en.wikipedia.org/wiki/Z-buffering) —
+  per-pixel depth test so closer fragments hide farther ones
+- [Bresenham's line algorithm](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm) —
+  classic alternative to DDA for integer lines
+
+### AI usage
+
+An AI coding assistant (Cursor) was used during cleanup, not to write
+the project from scratch.
+
+- **Parser** — locate why valid colored maps such as
+  `landscape/42.fdf` were rejected as unauthorized characters (a
+  tautology in `check_line` when a comma was present).
+- **Makefile** — make `clean` / `fclean` remove `objs/` and `./fdf`.
+- **Rendering** — identify lag from clearing the 1920 x 1080 image and
+  depth buffer twice per keypress, and from calling `cos` / `sin` on
+  every vertex; those paths were then simplified in the source.
+- **Performance discussion** — explain why MinilibX cannot keep huge
+  maps as smooth as small ones (CPU rasterisation, one full redraw per
+  event, hundreds of thousands of DDA edges).
+- **README** — draft this file and reshape it to the 42 README rules
+  (italic curriculum line, Description, Instructions, Resources, AI
+  disclosure).
+
+Core design (grid parsing, projections, matrix rotation, DDA, colors,
+hooks) is the student's. AI output was reviewed and adapted before it
+went into the repository.
