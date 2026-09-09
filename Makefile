@@ -56,7 +56,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo "$(BLUE)Compiling $<...$(RESET)"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-
 # Compile MinilibX
 $(MLX):
 	@echo "$(GREEN)Building MinilibX...$(RESET)"
@@ -72,16 +71,17 @@ $(LIBFT):
 # Delete objs
 clean:
 	@echo "$(RED)Cleaning object files...$(RESET)"
+	@rm -rf $(OBJ_DIR)
 	@make -s -C $(MLX_DIR) clean
 	@make -s -C $(LIBFT_DIR) clean
 	@echo "$(RED)✓ Object files cleaned$(RESET)"
 
 fclean: clean
 	@echo "$(RED)Removing executables...$(RESET)"
+	@rm -f $(NAME)
 	@make -s -C $(LIBFT_DIR) fclean
 	@echo "$(RED)✓ Executables removed$(RESET)"
 
 re: fclean all
-
 
 .PHONY: all clean fclean re
